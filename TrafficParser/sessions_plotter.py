@@ -5,8 +5,10 @@ sessions_plotter.py has 3 functions to create spectogram, histogram, 2d_histogra
 
 import matplotlib.pyplot as plt
 import numpy as np
+from traffic_csv_converter import IMAGE_SIZE
 
 MTU = 1500
+
 
 def session_spectogram(ts, sizes, name=None):
     plt.scatter(ts, sizes, marker='.')
@@ -55,21 +57,16 @@ def session_histogram(sizes, plot=False):
     return hist.astype(np.uint16)
 
 
-def session_2d_histogram(ts, sizes, plot=False, tps=None):
-    if tps is None:
-        max_delta_time = ts[-1] - ts[0]
-    else:
-        max_delta_time = tps
-
-    # ts_norm = map(int, ((np.array(ts) - ts[0]) / max_delta_time) * MTU)
-    ts_norm = ((np.array(ts) - ts[0]) / max_delta_time) * MTU
-    H, xedges, yedges = np.histogram2d(sizes, ts_norm, bins=(range(0, MTU + 1, 1), range(0, MTU + 1, 1)))
+def session_2d_histogram(ts, sizes, plot=False):
+    max_delta_time = ts[-1] - ts[0]
+    ts_norm = ((np.array(ts) - ts[0]) / max_delta_time) * IMAGE_SIZE
+    size_norm = (np.array(sizes) / MTU) * IMAGE_SIZE
+    H, x_edges, y_edges = np.histogram2d(size_norm, ts_norm, bins=(range(0, IMAGE_SIZE + 1), range(0, IMAGE_SIZE + 1)))
 
     if plot:
-        plt.pcolormesh(xedges, yedges, H)
+        plt.pcolormesh(x_edges, y_edges, H,cmap= 'binary')
         plt.colorbar()
-        plt.xlim(0, MTU)
-        plt.ylim(0, MTU)
-        plt.set_cmap('binary')
+        plt.xlim(0, IMAGE_SIZE)
+        plt.ylim(0, IMAGE_SIZE)
         plt.show()
     return H.astype(np.uint16)

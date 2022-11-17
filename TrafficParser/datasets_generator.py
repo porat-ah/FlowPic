@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 datasets_generator.py creates final class_vs_all dataset ready to be inserted to machine.
-The input for this module are pre-created numpy array containing all classes session 2d_histograms created in traffic_csv_conveter.py
+The input for this module are pre-created numpy array containing all classes session 2d_histograms created in traffic_csv_converter.py
 """
 import glob
 import numpy as np
